@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipeline</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 колонки */
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .character, .starships, .species {
+            padding: 10px;
+            border-radius: 5px;
+            background-color: antiquewhite;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            border: 5px solid; /* Разные цвета границ для каждого типа */
+        }
+        .character {
+            border-color: red;
+        }
+        .starships {
+            border-color: green;
+        }
+        .species {
+            border-color: blue;
+        }
+        .character h2, .starships h2, .species h2 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+    <body>
+        <script src="https://cdn.jsdelivr.net/npm/json-formatter-js@latest/dist/json-formatter.umd.js"></script>
+        <script defer type="module" src="../Pipe/Pipeline.js"></script>
+
+        <span id="demo"></span>
+        <div id="json"></div>
+
+        <form id="searchForm">
+            <input type="text" id="searchInput" placeholder="Roll the dice"/>
+            <button type="submit">Search</button>
+        </form>
+
+        <div class="grid-container">
+            <div>
+                <h1><strong>People</strong></h1>
+                <div id="characters"></div>
+            </div>
+            <div>
+                <h1><strong>Starships</strong></h1>
+                <div id="starships"></div>
+            </div>
+            <div>
+                <h1><strong>Species</strong></h1>
+                <div id="species"></div>
+            </div>
+        </div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const searchForm = document.getElementById('searchForm');
+                    searchForm.addEventListener('submit', function(event) {
+                        event.preventDefault();
+                        const query = document.getElementById('searchInput').value.trim();
+
+                        if(query) {
+                            fetch(`/search?q=${query}`)
+                            .then(response => response.json())
+                            .then(results => {
+                                renderCharacters({results: results.characters});
+                                renderStarships({results: results.starships});
+                                renderSpecies({results: results.species});
+                            }).catch(error => console.error('Error during search: ', error))
+                        }
+                    });
+
+                    function renderCharacters(characters) {
+                        const demoElement = document.getElementById('demo'); // Здесь я принимаю необработанные данные
+                        demoElement.textContent = JSON.stringify(characters, null, 2); // Выводим полученные данные в элемент с id "demo"
+
+                        const jsonContainer = document.getElementById('json'); // Здесь я получаю форматированные данные
+                        const formatter = new JSONFormatter(characters, 2); // Выводим полученные данные в элемент с id "json"
+                        jsonContainer.appendChild(formatter.render());
+                        
+                        const charactersDiv = document.getElementById('characters'); // Здесь я получаю стилизированные данные
+                        charactersDiv.innerHTML = ''; // очистка контейнера
+                        if (characters && characters.results) {
+                            characters.results.forEach(character => {
+                                const characterDiv = document.createElement('div');
+                                characterDiv.classList.add('character'); // Выводим полученные данные в элемент с id "characters"
+                                characterDiv.innerHTML = `
+                                    <h2>${character.name}</h2>
+                                    <p><strong>Height:</strong> ${character.height} cm</p>
+                                    <p><strong>Mass:</strong> ${character.mass} kg</p>
+                                    <p><strong>Hair Color:</strong> ${character.hair_color}</p>
+                                    <p><strong>Skin Color:</strong> ${character.skin_color}</p>
+                                    <p><strong>Eye Color:</strong> ${character.eye_color}</p>
+                                    <p><strong>Birth Year:</strong> ${character.birth_year}</p>
+                                    <p><strong>Gender:</strong> ${character.gender}</p>
+                                `;
+                                charactersDiv.appendChild(characterDiv);
+                            });
+                        } else {
+                            charactersDiv.textContent = 'No characters data available';
+                        }
+                    };
+
+                    function renderStarships(starships) {
+                        const demoElement = document.getElementById('demo');
+                        demoElement.textContent = JSON.stringify(starships, null, 2);
+
+                        const jsonContainer = document.getElementById('json');
+                        const formatter = new JSONFormatter(starships, 2);
+                        jsonContainer.appendChild(formatter.render());
+
+                        const starshipsDiv = document.getElementById('starships');
+                        starshipsDiv.innerHTML = '';
+                        if (starships && starships.results) {
+                            starships.results.forEach(starship => {
+                                const starshipDiv = document.createElement('div');
+                                starshipDiv.classList.add('starships');
+                                starshipDiv.innerHTML = `
+                                    <h2>${starship.name}</h2>
+                                    <p><strong>Model:</strong> ${starship.model}</p>
+                                    <p><strong>Starship Class:</strong> ${starship.starship_class}</p>
+                                    <p><strong>Manufacturer:</strong> ${starship.manufacturer}</p>
+                                    <p><strong>Cost in Credits:</strong> ${starship.cost_in_credits}</p>
+                                    <p><strong>Length:</strong> ${starship.length} m</p>
+                                    <p><strong>Crew:</strong> ${starship.crew}</p>
+                                    <p><strong>Passengers:</strong> ${starship.passengers}</p>
+                                    <p><strong>Max Atmosphering Speed:</strong> ${starship.max_atmosphering_speed}</p>
+                                    <p><strong>Hyperdrive Rating:</strong> ${starship.hyperdrive_rating}</p>
+                                    <p><strong>MGLT:</strong> ${starship.MGLT}</p>
+                                    <p><strong>Cargo Capacity:</strong> ${starship.cargo_capacity}</p>
+                                    <p><strong>Consumables:</strong> ${starship.consumables}</p>
+                                `;
+                                starshipsDiv.appendChild(starshipDiv);
+                            });
+                        } else {
+                            starshipsDiv.textContent = 'No starships data available';
+                        }
+                    };
+
+                    function renderSpecies(species) {
+                        const demoElement = document.getElementById('demo');
+                        demoElement.textContent = JSON.stringify(species, null, 2);
+
+                        const jsonContainer = document.getElementById('json');
+                        const formatter = new JSONFormatter(species, 2);
+                        jsonContainer.appendChild(formatter.render());
+
+                        const speciesDiv = document.getElementById('species');
+                        speciesDiv.innerHTML = '';
+                        if (species && species.results) {
+                            species.results.forEach(specie => {
+                                const specieDiv = document.createElement('div');
+                                specieDiv.classList.add('species');
+                                specieDiv.innerHTML = `
+                                    <h2>${specie.name}</h2>
+                                    <p><strong>Classification:</strong> ${specie.classification}</p>
+                                    <p><strong>Designation:</strong> ${specie.designation}</p>
+                                    <p><strong>Average Height:</strong> ${specie.average_height} cm</p>
+                                    <p><strong>Average Lifespan:</strong> ${specie.average_lifespan} years</p>
+                                    <p><strong>Eye Colors:</strong> ${specie.eye_colors}</p>
+                                    <p><strong>Hair Colors:</strong> ${specie.hair_colors}</p>
+                                    <p><strong>Skin Colors:</strong> ${specie.skin_colors}</p>
+                                    <p><strong>Language:</strong> ${specie.language}</p>
+                                    <p><strong>Homeworld:</strong> ${specie.homeworld}</p>
+                                    <p><strong>People:</strong> ${specie.people.join(', ')}</p>
+                                    <p><strong>Films:</strong> ${specie.films.join(', ')}</p>
+                                `;
+                                speciesDiv.appendChild(specieDiv);
+                            });
+                        } else {
+                            speciesDiv.textContent = 'No species data available';
+                        }
+                    };
+
+                    fetch('/people').then(response => response.json()).then(characters => {
+                        renderCharacters(characters);
+                    }).catch(error => console.error('Error fetching characters: ', error));
+                    
+                    fetch('/starships').then(response => response.json()).then(starships => {
+                        renderStarships(starships);
+                    }).catch(error => console.error('Error fetching starships: ', error));
+
+                    fetch('/species').then(response => response.json()).then(species => {
+                        renderSpecies(species)
+                    }).catch(error => console.error('Error fetching species: ', error));
+                });
+            </script>
+    </body>
+</html>
