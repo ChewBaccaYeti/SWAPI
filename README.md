@@ -20,6 +20,6 @@ http://localhost:3030/starships
 
 http://localhost:3030/species
 
-And ther you can get raw/parsed JSON response 
+And there you can get raw/parsed JSON response 
 
 ![image](https://github.com/user-attachments/assets/89c44d52-f482-412b-ab2b-93ec2a739390)
