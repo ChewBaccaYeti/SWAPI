@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const axios_1 = __importDefault(require("axios"));
+const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
 const app = (0, express_1.default)();
 const PORT = 3030;
@@ -23,8 +24,12 @@ const starships = 'https://swapi.dev/api/starships';
 const species = 'https://swapi.dev/api/species';
 const cache = new Map();
 const CACHE_TTL = 60 * 60 * 1000;
+app.use((0, cors_1.default)());
 // Serve static files from the directory
-app.use(express_1.default.static(path_1.default.join(__dirname)));
+app.use(express_1.default.static(path_1.default.join(__dirname, '../')));
+app.get('/', (req, res) => {
+    res.sendFile(path_1.default.join(__dirname, '../index.html'));
+});
 function fetchWithCache(url) {
     return __awaiter(this, void 0, void 0, function* () {
         const now = Date.now();
@@ -41,8 +46,8 @@ function fetchWithCache(url) {
 }
 ;
 // Middleware to fetch ALL data for designated endpoints below
-function fetchAllData(url_1) {
-    return __awaiter(this, arguments, void 0, function* (url, limit = 20) {
+function fetchAllData(url, limit = 20) {
+    return __awaiter(this, void 0, void 0, function* () {
         let results = [];
         let nextUrl = url;
         while (nextUrl && results.length < limit) {

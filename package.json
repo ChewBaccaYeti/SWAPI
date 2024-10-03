@@ -7,9 +7,25 @@
     "pipe": "nodemon Pipe/Pipeline.ts",
     "test": "jest"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChewBaccaYeti/SWAPI.git"
+  },
+  "keywords": [
+    "JS",
+    "TS"
+  ],
+  "author": "Venedykt Mitishov",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChewBaccaYeti/SWAPI/issues"
+  },
+  "homepage": "https://github.com/ChewBaccaYeti/SWAPI#readme",
   "dependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.21",
+    "@types/node": "^22.4.0",
     "axios": "^1.7.7",
     "axios-mock-adapter": "^2.0.0",
     "cors": "^2.8.5",
@@ -17,5 +33,9 @@
     "jest": "^29.7.0",
     "nodemon": "^3.1.4",
     "supertest": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "typescript": "^5.6.2"
   }
 }

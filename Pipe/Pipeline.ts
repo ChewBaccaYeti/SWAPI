@@ -22,7 +22,10 @@ const CACHE_TTL = 60 * 60 * 1000;
 
 app.use(cors());
 // Serve static files from the directory
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../')));
+app.get('/', (req: Request, res: Response) => {
+    res.sendFile(path.join(__dirname, '../index.html'));
+});
 
 async function fetchWithCache<T>(url: string): Promise<T> {
     const now = Date.now();

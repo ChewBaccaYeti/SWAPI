@@ -1,6 +1,6 @@
 {
-    "watch": ["Pipe/"],
+    "watch": ["Pipe", "compiled"],
     "ext": "js,json,html",
     "ignore": ["node_modules/"],
-    "exec": "node ./Pipe/Pipeline.js"
+    "exec": "node compiled/Pipeline.js"
 }
